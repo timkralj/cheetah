@@ -881,12 +881,6 @@ template <typename Monoid> class reducer_base {
         return *static_cast<view_type *>(__cilkrts_hyper_lookup(&m_base));
     }
 
-    /** @copydoc view()
-     */
-    const view_type &view() const {
-        return const_cast<reducer_base *>(this)->view();
-    }
-
     //@}
 
     /** Initial view pointer field.
@@ -1858,6 +1852,10 @@ using stub::reducer;
 #define REDUCER_VIEW(Expr)                                                     \
     (*(_Typeof((Expr).value) *)__cilkrts_hyper_lookup(                         \
         &(Expr).__cilkrts_hyperbase))
+
+#define POINTER_TO_REDUCER_VIEW(Expr, w)                                                     \
+    ((_Typeof((Expr).value) *)__cilkrts_hyper_lookup_julia_rts(                         \
+        &(Expr).__cilkrts_hyperbase, w))
 
 //@} C language reducer macros
 

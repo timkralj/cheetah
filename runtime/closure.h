@@ -179,4 +179,6 @@ CHEETAH_INTERNAL void Closure_destroy(__cilkrts_worker *const w, Closure *t);
 CHEETAH_INTERNAL void Closure_destroy_main(Closure *t);
 CHEETAH_INTERNAL void Closure_destroy_global(struct global_state *const g,
                                              Closure *t);
+
+void *__cilkrts_hyper_lookup_julia_rts(__cilkrts_hyperobject_base *key, __cilkrts_worker *w);
 #endif

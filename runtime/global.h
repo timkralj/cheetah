@@ -40,7 +40,7 @@ struct rts_options {
     unsigned int force_reduce;   /* can be set via env variable CILK_FORCE_REDUCE */
 };
 
-struct global_state {
+extern struct global_state {
     /* globally-visible options (read-only after init) */
     struct rts_options options;
 
@@ -89,6 +89,7 @@ CHEETAH_INTERNAL void for_each_worker(global_state *,
 CHEETAH_INTERNAL void for_each_worker_rev(global_state *,
                                           void (*)(__cilkrts_worker *, void *),
                                           void *data);
+
 
 // util functions used by both init.c and global.c
 inline static long env_get_int(char const *var) {

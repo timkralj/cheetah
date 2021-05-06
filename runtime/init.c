@@ -29,6 +29,8 @@
 #include "scheduler.h"
 
 #include "reducer_impl.h"
+// #include "../../../../src/support/libsupport.h"
+// #include "../../../../src/julia.h"
 
 CHEETAH_INTERNAL
 extern void cleanup_invoke_main(Closure *invoke_main);
@@ -50,6 +52,8 @@ static local_state *worker_local_init(global_state *g) {
     l->provably_good_steal = false;
     l->rand_next = 0; /* will be reset in scheduler loop */
     cilk_sched_stats_init(&(l->stats));
+
+
 
     return l;
 }
@@ -92,6 +96,11 @@ static void *scheduler_thread_proc(void *arg) {
     __cilkrts_worker *w = (__cilkrts_worker *)arg;
     cilkrts_alert(BOOT, w, "scheduler_thread_proc");
     __cilkrts_set_tls_worker(w);
+
+    // START JULIA RTS INTEGRATION
+    // julia_init_plts_callback();
+    cilkrts_callbacks.julia_callback();
+    // END JULIA RTS INTEGRATION
 
     worker_id self = w->self;
 

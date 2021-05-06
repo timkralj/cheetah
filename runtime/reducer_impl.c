@@ -347,6 +347,41 @@ void *__cilkrts_hyper_lookup(__cilkrts_hyperobject_base *key) {
     return vinfo->val;
 }
 
+void *__cilkrts_hyper_lookup_julia_rts(__cilkrts_hyperobject_base *key, __cilkrts_worker *w) {
+    // __cilkrts_worker *w = __cilkrts_get_tls_worker();
+    hyper_id_t id = key->__id_num;
+
+    // if (!__builtin_expect(id & HYPER_ID_VALID, HYPER_ID_VALID)) {
+    //     cilkrts_bug(w, "User error: reference to unregistered hyperobject %p",
+    //                 key);
+    // }
+    id &= ~HYPER_ID_VALID;
+
+    if (__builtin_expect(!w, 0)) {
+        return (char *)key + key->__view_offset;
+    }
+    
+    if (w->g->options.force_reduce) {
+        CILK_ASSERT(w, w->g->nworkers == 1);
+        promote_own_deque(w);
+    }
+
+    cilkred_map *h = w->reducer_map;
+
+    if (h == NULL) {
+        return NULL;
+    }
+
+    if (h->merging)
+        cilkrts_bug(w, "User error: hyperobject used by another hyperobject");
+
+    ViewInfo *vinfo = cilkred_map_lookup(h, key);
+    if (vinfo == NULL) {
+        return NULL;
+    }
+    return vinfo->val;
+}
+
 void *__cilkrts_hyper_alloc(__cilkrts_hyperobject_base *key, size_t bytes) {
     if (USE_INTERNAL_MALLOC) {
         __cilkrts_worker *w = __cilkrts_get_tls_worker();

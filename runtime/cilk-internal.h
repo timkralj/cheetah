@@ -230,6 +230,7 @@ struct cilkrts_callbacks {
     bool after_init;
     void (*init[MAX_CALLBACKS])(void);
     void (*exit[MAX_CALLBACKS])(void);
+    void (*julia_callback)(void);
 };
 
 extern CHEETAH_INTERNAL struct cilkrts_callbacks cilkrts_callbacks;

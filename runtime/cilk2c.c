@@ -17,7 +17,7 @@ extern _Unwind_Reason_Code _Unwind_RaiseException(struct _Unwind_Exception *);
 CHEETAH_INTERNAL unsigned cilkg_nproc = 0;
 
 CHEETAH_INTERNAL struct cilkrts_callbacks cilkrts_callbacks = {
-    0, 0, false, {NULL}, {NULL}};
+    0, 0, false, {NULL}, {NULL}, {NULL}};
 
 // Internal method to get the Cilk worker ID.  Intended for debugging purposes.
 //
@@ -34,11 +34,18 @@ unsigned __cilkrts_get_worker_number(void) {
 // help initialization of libraries that depend on the OpenCilk runtime.
 int __cilkrts_is_initialized(void) { return NULL != default_cilkrts; }
 
+
 // These callback-registration methods can run before the runtime system has
 // started.
 //
 // Init callbacks are called in order of registration.  Exit callbacks are
 // called in reverse order of registration.
+
+// julia integration callback
+int __cilkrts_julia_callback(void (*callback)(void)) {
+    cilkrts_callbacks.julia_callback = callback;
+    return 0;
+}
 
 // Register a callback to run at Cilk-runtime initialization.  Returns 0 on
 // successful registration, nonzero otherwise.
