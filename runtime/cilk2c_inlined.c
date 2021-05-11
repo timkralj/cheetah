@@ -38,6 +38,9 @@ uint64_t __cilkrts_get_dprand(void) {
 
 #endif
 
+extern int8_t cilk_jl_gc_safe_enter();
+extern void cilk_jl_gc_safe_leave(int8_t state);
+
 // Begin a Cilkified region.  The routine runs on a Cilkifying thread to
 // transfer the execution of this function to the workers in global_state g.
 // This routine must be inlined for correctness.
@@ -57,8 +60,14 @@ cilkify(global_state *g, __cilkrts_stack_frame *sf) {
     if (__builtin_setjmp(sf->ctx) == 0) {
         sysdep_save_fp_ctrl_state(sf);
         invoke_cilkified_root(g, sf);
-
+        
+        // require ptls
+        // jl_gc_safe_enter
+        int8_t state = cilk_jl_gc_safe_enter();
         wait_until_cilk_done(g);
+        cilk_jl_gc_safe_leave(state);
+        // jl_gc_safe_leave
+
 
         // At this point, some Cilk worker must have completed the Cilkified
         // region and executed uncilkify at the end of the Cilk function.  The
