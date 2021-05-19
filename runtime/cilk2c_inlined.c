@@ -38,8 +38,8 @@ uint64_t __cilkrts_get_dprand(void) {
 
 #endif
 
-extern int8_t cilk_jl_gc_safe_enter();
-extern void cilk_jl_gc_safe_leave(int8_t state);
+extern int8_t jl_cilk_gc_safe_enter();
+extern void jl_cilk_gc_safe_leave(int8_t state);
 
 // Begin a Cilkified region.  The routine runs on a Cilkifying thread to
 // transfer the execution of this function to the workers in global_state g.
@@ -61,11 +61,13 @@ cilkify(global_state *g, __cilkrts_stack_frame *sf) {
         sysdep_save_fp_ctrl_state(sf);
         invoke_cilkified_root(g, sf);
         
-        // require ptls
+        // require ptls copy world_age J-thread -> cilk worker
+        // copy world age to all workers?
+
         // jl_gc_safe_enter
-        int8_t state = cilk_jl_gc_safe_enter();
+        int8_t state = jl_cilk_gc_safe_enter();
         wait_until_cilk_done(g);
-        cilk_jl_gc_safe_leave(state);
+        jl_cilk_gc_safe_leave(state);
         // jl_gc_safe_leave
 
 
