@@ -7,7 +7,7 @@ extern "C" {
 extern int __cilkrts_is_initialized(void);
 extern int __cilkrts_atinit(void (*callback)(void));
 extern int __cilkrts_atexit(void (*callback)(void));
-extern int __cilkrts_julia_callback(void (*callback)(void));
+extern int __cilkrts_julia_callback(void (*callback)(void), void (*thief_enter)(void), void (*thief_exit)(void));
 
 extern unsigned __cilkrts_get_nworkers(void);
 extern unsigned __cilkrts_get_worker_number(void) __attribute__((deprecated));

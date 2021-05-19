@@ -40,6 +40,15 @@ static void worker_change_state(__cilkrts_worker *w,
                                 enum __cilkrts_worker_state s) {
     /* TODO: Update statistics based on state change. */
     CILK_ASSERT(w, w->l->state != s);
+
+    if (s == WORKER_RUN) {
+        
+        cilkrts_callbacks.julia_exit_thief();
+    } else if (s == WORKER_SCHED || s == WORKER_IDLE) {
+
+        cilkrts_callbacks.julia_enter_thief();
+    }
+
     w->l->state = s;
 #if 0
     /* This is a valuable assertion but there is no way to make it

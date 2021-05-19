@@ -231,6 +231,8 @@ struct cilkrts_callbacks {
     void (*init[MAX_CALLBACKS])(void);
     void (*exit[MAX_CALLBACKS])(void);
     void (*julia_callback)(void);
+    void (*julia_enter_thief)(void);
+    void (*julia_exit_thief)(void);
 };
 
 extern CHEETAH_INTERNAL struct cilkrts_callbacks cilkrts_callbacks;

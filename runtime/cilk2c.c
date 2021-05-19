@@ -42,8 +42,10 @@ int __cilkrts_is_initialized(void) { return NULL != default_cilkrts; }
 // called in reverse order of registration.
 
 // julia integration callback
-int __cilkrts_julia_callback(void (*callback)(void)) {
+int __cilkrts_julia_callback(void (*callback)(void), void (*thief_enter)(void), void (*thief_exit)(void)) {
     cilkrts_callbacks.julia_callback = callback;
+    cilkrts_callbacks.julia_enter_thief = thief_enter;
+    cilkrts_callbacks.julia_exit_thief = thief_exit;
     return 0;
 }
 

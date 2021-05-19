@@ -29,8 +29,6 @@
 #include "scheduler.h"
 
 #include "reducer_impl.h"
-// #include "../../../../src/support/libsupport.h"
-// #include "../../../../src/julia.h"
 
 CHEETAH_INTERNAL
 extern void cleanup_invoke_main(Closure *invoke_main);
@@ -98,7 +96,6 @@ static void *scheduler_thread_proc(void *arg) {
     __cilkrts_set_tls_worker(w);
 
     // START JULIA RTS INTEGRATION
-    // julia_init_plts_callback();
     cilkrts_callbacks.julia_callback();
     // END JULIA RTS INTEGRATION
 
